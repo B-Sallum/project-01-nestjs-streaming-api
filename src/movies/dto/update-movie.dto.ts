@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateMovieDto } from './create-movie.dto';
+import { IsOptional } from 'class-validator';
 
-export class UpdateMovieDto extends PartialType(CreateMovieDto) {}
+export class UpdateMovieDto {
+  @IsOptional()
+  name: string;
+
+  @IsOptional()
+  year: string;
+
+  @IsOptional()
+  description: string;
+}

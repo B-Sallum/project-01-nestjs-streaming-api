@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Injectable,
-  NotAcceptableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Users } from '@prisma/client';
@@ -15,16 +14,6 @@ export class UsersService {
   constructor(private db: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<Users> {
-    if (
-      !data.name ||
-      !data.age ||
-      !data.email ||
-      !data.pass ||
-      !data.passConfirm
-    ) {
-      throw new NotAcceptableException('All fields are required');
-    }
-
     if (data.pass !== data.passConfirm) {
       throw new UnauthorizedException("Passwords don't match");
     } else {
@@ -53,19 +42,29 @@ export class UsersService {
     return user;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async update(id: string, data: UpdateUserDto): Promise<Users> {
+    const user = await this.db.users.update({
+      where: { id: id },
+      data: data,
+    });
+    delete user.pass;
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<Users> {
+    const user = await this.db.users.findUnique({
+      where: { id: id },
+    });
+    delete user.pass;
+    delete user.updatedAt;
+    delete user.id;
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<string> {
+    await this.db.users.delete({
+      where: { id: id },
+    });
+    return 'User succesfully deleted';
   }
 }
