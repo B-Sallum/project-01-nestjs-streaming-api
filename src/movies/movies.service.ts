@@ -45,14 +45,18 @@ export class MoviesService {
       throw new NotFoundException('Movie not found');
     }
 
-    delete movie.id;
-    delete movie.createdAt;
-    delete movie.updatedAt;
-
     return movie;
   }
 
   async update(id: string, data: UpdateMovieDto): Promise<UpdateMovieDto> {
+    const checkMovie = await this.database.movies.findUnique({
+      where: { id },
+    });
+
+    if (!checkMovie) {
+      throw new NotFoundException('Movie not found');
+    }
+
     const movie = await this.database.movies.update({
       where: { id },
       data: data,
@@ -65,10 +69,21 @@ export class MoviesService {
     return movie;
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string): Promise<{ message: string }> {
+    const movie = await this.database.movies.findUnique({
+      where: { id },
+    });
+
+    if (!movie) {
+      throw new NotFoundException('Movie not found');
+    }
+
     await this.database.movies.delete({
       where: { id },
     });
-    return 'Movie successfully deleted';
+
+    return {
+      message: 'Movie successfully deleted',
+    };
   }
 }

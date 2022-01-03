@@ -32,7 +32,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<string> {
+  remove(@Param('id') id: string): Promise<{ message: string }> {
     return this.service.remove(id);
   }
 }

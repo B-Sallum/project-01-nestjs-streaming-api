@@ -80,10 +80,21 @@ export class UsersService {
     return user;
   }
 
-  async remove(id: string): Promise<string> {
+  async remove(id: string): Promise<{ message: string }> {
+    const checkUser = await this.db.users.findUnique({
+      where: { id },
+    });
+
+    if (!checkUser) {
+      throw new NotFoundException('User not found');
+    }
+
     await this.db.users.delete({
       where: { id },
     });
-    return 'User succesfully deleted';
+
+    return {
+      message: 'User deleted',
+    };
   }
 }
