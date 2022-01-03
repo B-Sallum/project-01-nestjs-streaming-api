@@ -24,16 +24,19 @@ export class MoviesController {
     return this.service.create(data);
   }
 
+  @UseGuards(AuthGuard())
   @Get()
   findAll(): Promise<UpdateMovieDto[]> {
     return this.service.findAll();
   }
 
+  @UseGuards(AuthGuard())
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Movies> {
     return this.service.findOne(id);
   }
 
+  @UseGuards(AuthGuard())
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -42,6 +45,7 @@ export class MoviesController {
     return this.service.update(id, data);
   }
 
+  @UseGuards(AuthGuard())
   @Delete(':id')
   remove(@Param('id') id: string): Promise<{ message: string }> {
     return this.service.remove(id);
