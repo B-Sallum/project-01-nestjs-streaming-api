@@ -22,12 +22,12 @@ export class MoviesController {
   }
 
   @Get()
-  findAll(): Promise<CreateMovieDto[]> {
+  findAll(): Promise<UpdateMovieDto[]> {
     return this.service.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<CreateMovieDto> {
+  findOne(@Param('id') id: string): Promise<Movies> {
     return this.service.findOne(id);
   }
 
@@ -35,7 +35,7 @@ export class MoviesController {
   update(
     @Param('id') id: string,
     @Body() data: UpdateMovieDto,
-  ): Promise<Movies> {
+  ): Promise<UpdateMovieDto> {
     return this.service.update(id, data);
   }
 
