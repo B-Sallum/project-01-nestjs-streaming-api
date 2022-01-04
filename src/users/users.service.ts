@@ -97,4 +97,64 @@ export class UsersService {
       message: 'User deleted',
     };
   }
+
+  async favorite(user: Users, movieId: string): Promise<{ message: string }> {
+    const movie = await this.db.movies.findUnique({
+      where: { id: movieId },
+    });
+
+    if (!movie) {
+      throw new NotFoundException('Movie not found');
+    }
+
+    const consult = await this.db.users.findUnique({
+      where: { id: user.id },
+      include: {
+        favMovies: true,
+      },
+    });
+
+    const userFavArray = consult.favMovies;
+    let foundFav = false;
+
+    userFavArray.map((movie) => {
+      if (movie.id === movieId) {
+        foundFav = true;
+      }
+    });
+
+    if (foundFav) {
+      await this.db.users.update({
+        where: { id: user.id },
+        data: {
+          favMovies: {
+            disconnect: {
+              id: movie.id,
+            },
+          },
+        },
+        include: {
+          favMovies: true,
+        },
+      });
+
+      return { message: 'Movie removed from Fav' };
+    } else {
+      await this.db.users.update({
+        where: { id: user.id },
+        data: {
+          favMovies: {
+            connect: {
+              id: movie.id,
+            },
+          },
+        },
+        include: {
+          favMovies: true,
+        },
+      });
+
+      return { message: 'Movie Favorited' };
+    }
+  }
 }

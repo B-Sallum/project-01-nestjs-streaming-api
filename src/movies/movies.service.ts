@@ -30,9 +30,7 @@ export class MoviesService {
 
   async findAll(): Promise<UpdateMovieDto[]> {
     const dbMovies = await this.database.movies.findMany();
-    const movies = dbMovies.map(
-      ({ createdAt, updatedAt, id, ...rest }) => rest,
-    );
+    const movies = dbMovies.map(({ createdAt, updatedAt, ...rest }) => rest);
     return movies;
   }
 
@@ -62,7 +60,6 @@ export class MoviesService {
       data: data,
     });
 
-    delete movie.id;
     delete movie.createdAt;
     delete movie.updatedAt;
 

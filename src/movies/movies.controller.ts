@@ -18,13 +18,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class MoviesController {
   constructor(private readonly service: MoviesService) {}
 
-  @UseGuards(AuthGuard())
-  @Post('new')
-  create(@Body() data: CreateMovieDto): Promise<Movies> {
-    return this.service.create(data);
-  }
-
-  @UseGuards(AuthGuard())
   @Get()
   findAll(): Promise<UpdateMovieDto[]> {
     return this.service.findAll();
@@ -34,6 +27,12 @@ export class MoviesController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Movies> {
     return this.service.findOne(id);
+  }
+
+  @UseGuards(AuthGuard())
+  @Post('new')
+  create(@Body() data: CreateMovieDto): Promise<Movies> {
+    return this.service.create(data);
   }
 
   @UseGuards(AuthGuard())
